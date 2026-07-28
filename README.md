@@ -18,7 +18,26 @@ Microservicio para la gestión de cuentas bancarias: creación de cuentas, consi
 - Maven (o usar el wrapper `mvnw` incluido, no requiere instalación aparte)
 - Docker Desktop (https://www.docker.com/products/docker-desktop)
 - Git
+## Diagrama despliegue 
 
+```mermaid
+flowchart TB
+    Browser["Browser"]
+
+    subgraph AWS["AWS account (personal)"]
+        S3["S3 + CloudFront<br/>React static site"]
+        EC2["EC2 t2.micro<br/>Spring Boot API (Docker)"]
+        RDS["RDS PostgreSQL<br/>Managed database"]
+
+        EC2 -- JDBC --> RDS
+    end
+
+    GHA["GitHub Actions<br/>CI/CD pipeline"]
+
+    Browser -- "Static assets" --> S3
+    Browser -- "HTTPS API" --> EC2
+    GHA -- "Deploy image" --> EC2
+```
 Verificar instalación:
 
 ```bash
